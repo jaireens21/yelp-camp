@@ -5,12 +5,29 @@ const maxSize= 2*1024*1024; //in bytes; max Image file size set to 2MB
 
 const multer  = require('multer'); //for image uploads
 const {storage} = require('../cloudinary');
+
+const whitelist = [ //allowed formats of images
+    'image/png',
+    'image/jpeg',
+    'image/jpg'
+]
+
 const upload = multer({  
     storage,  //upload to cloudinary
 
     limits: {fileSize: maxSize, files:3},  
     //limit to 3 image uploads at once, each limited to 2MB in size
 
+    //checking is file extension is an allowed format
+    fileFilter: (req, file, cb) => {
+        if (!whitelist.includes(file.mimetype)){
+          cb(null, false);
+          return cb(new Error('Only .png, .jpg and .jpeg formats allowed!'));
+        }
+        else{
+            cb(null, true);
+        } 
+    }
 }); 
 
 const campgrounds=require('../controllers/campgrounds') //requiring controllers
