@@ -1,0 +1,84 @@
+<% layout('layouts/boilerplate.ejs') %> 
+<div class="row">
+    <h1 class="text-center">Edit Campground Details</h1>
+    <div class="col-6 offset-3">
+        <form class="mt-3 needs-validation" method="POST" action="/campgrounds/<%=campground._id%>?_method=PUT" novalidate enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Name of Campground:</label>
+            <input type="text" class="form-control" id="title" name="campground[title]" placeholder="Name" value="<%=campground.title%>" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a name!
+            </div>
+        </div>
+        <div  class="mb-3">
+            <label for="location" class="form-label">Location:</label>
+            <input type="text" class="form-control"id="location" name="campground[location]" placeholder="Location" value="<%=campground.location%>" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a location!
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Nightly Price:</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.1"  id="price" name="campground[price]" placeholder="0.00" class="form-control" value="<%=campground.price%>" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a price!
+                </div>
+            </div>
+        </div>
+        <div class=" mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" name="campground[description]" placeholder="Description" class="form-control" required><%=campground.description%></textarea>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a description!
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="image" class="form-label">Add more images (max 3 files with max file size of 2MB) : </label>
+            <input class="form-control" type="file" name="image" id="image" onchange="validateFileSize(this), validateFileNumber(this)" multiple>
+            <!--validateFileSize prevent uploading image of large size, see public/javascripts-->
+        </div>
+
+        <div class="mb-3">
+            <label>Delete Images:</label>
+            <div class="row row-cols-4 g-4 mb-3">
+                <%for (let img of campground.images) {%>
+                    <div class="col">
+                        <div class="card">
+                            <img src="<%=img.cropped%>" alt="" class="img-thumbnail">
+                            <!--cropped is using virtual on models/campgrounds to give a 4:3 image-->
+                            <div class="card-img-overlay text-end pt-1 pe-2">
+                                <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%=img.filename%>" >    
+                            </div>
+                        </div>
+                    </div>
+                <%}%> 
+            </div>
+
+        </div>
+
+        <button class="btn btn-info">Save Changes</button>
+        <a href="/campgrounds/<%=campground._id%>" class="btn btn-danger">Cancel</a>
+        </form>
+
+    </div>
+
+    
+</div>
+
+
+
