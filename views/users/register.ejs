@@ -1,42 +1,52 @@
 <% layout('layouts/boilerplate.ejs') %> 
 
-<div class="row">
-    <h1 class="text-center">Register</h1>
-    <div class="col-6 offset-3">
-        <form class="mt-3 needs-validation" method="POST" action="/register" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username: </label>
-            <input type="text" id="username" name="username" placeholder="Name" class="form-control" required>
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            <div class="invalid-feedback">
-                Please enter a username!
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email: </label>
-            <input type="email" id="email" name="email" placeholder="Email" class="form-control" required>
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            <div class="invalid-feedback">
-                Please enter an email address!
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password: </label>
-            <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            <div class="invalid-feedback">
-                Please enter a password!
-            </div>
-        </div>
-        <button class="btn btn-success">Register</button>
-        </form>
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+            <div class="card shadow">
+                <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80"
+                    alt="" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Register</h5>
+                    <form action="/register" method="POST" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="username">Username</label>
+                            <input class="form-control" type="text" id="username" name="username" autofocus required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a username!
+                            </div>
+                        </div>
 
-        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email: </label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter an email address!
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password</label>
+                            <input class="form-control" type="password" id="password" name="password" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a password!
+                            </div>
+                        </div>
+                        <button class="btn btn-success btn-block">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+

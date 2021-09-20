@@ -1,6 +1,6 @@
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
-container: 'map',
+container: 'cluster-map',
 style: 'mapbox://styles/mapbox/light-v10',
 center: [-103.5917, 40.6699],
 zoom: 3
@@ -118,7 +118,10 @@ new mapboxgl.Popup()
     .setHTML(text)
     .addTo(map);
 });
- 
+
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
+
 map.on('mouseenter', 'clusters', () => {
     map.getCanvas().style.cursor = 'pointer';
 });
