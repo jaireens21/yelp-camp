@@ -2,6 +2,10 @@
 
 const Campground=require('../models/campground');
 
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding'); //for getting geocode for campground location
+const mapboxToken= process.env.MAPBOX_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapboxToken});
+
 const {cloudinary}= require("../cloudinary"); //to be able to delete images on cloudinary website
 
 module.exports.index= async(req,res)=>{
@@ -14,10 +18,19 @@ module.exports.renderNewForm= (req,res)=>{
 }
 
 module.exports.createCampground= async (req,res,next)=>{
+
+    const geodata= await geocodingClient.forwardGeocode({
+        query: req.body.campground.location,
+        limit:1 //no. of results
+    }).send()
+    //res.send(geodata.body.features[0].geometry); //gives a geoJSON
+    
     const campground= new Campground(req.body.campground);
+    campground.geometry= geodata.body.features[0].geometry; //saving location coordinates to campground
     campground.images= req.files.map( f=>( {url:f.path, filename:f.filename}) ); //uploaded images' details (available on req.files thanks to multer) being added to campground
     campground.author=req.user._id;
     await campground.save();
+    console.log(campground);
     req.flash('success', 'Successfully made a new campground!');// a flash
     res.redirect(`/campgrounds/${campground._id}`);
 }
@@ -33,6 +46,12 @@ module.exports.renderEditForm= async (req,res)=>{
 
 module.exports.updateCampground= async(req,res)=>{
     const campground= await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground}, {runValidators:true});
+
+    const geodata= await geocodingClient.forwardGeocode({
+        query: req.body.campground.location,
+        limit:1 //no. of results
+    }).send()
+    campground.geometry= geodata.body.features[0].geometry; 
     const imgs= req.files.map( f=>({url:f.path, filename:f.filename})); //this is an array of objects
     campground.images.push(...imgs); //push 1 element of the array at a time
     await campground.save();

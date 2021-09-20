@@ -4,6 +4,10 @@
 <div class="row">
   <div class="col-6">
 
+    <div id="map" style="width:400px; height:300px;">
+      <!--THIS IS WHERE THE MAP WILL SHOW using the script at bottom of this file-->
+    </div>
+
     <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <% campground.images.forEach ( (img,index)=>{ %>
@@ -119,6 +123,30 @@
 
 </div>
 
+
+
+<!-- to generate map -->
+<script> 
+
+  mapboxgl.accessToken= '<%-process.env.MAPBOX_TOKEN%>';
+  const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [<%-campground.geometry.coordinates%>],
+        zoom: 7
+      });
+
+  // create the popup
+  const popup = new mapboxgl.Popup({ offset: 25 }).setHTML("<h3><%=campground.title%></h3><p><%=campground.location%></p>");
+ 
+  
+  // create the marker
+  const marker1= new mapboxgl.Marker()
+    .setLngLat([<%-campground.geometry.coordinates%>])
+    .setPopup(popup) // sets a popup on this marker
+    .addTo(map);
+
+</script>
     
     
     
