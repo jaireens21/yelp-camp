@@ -19,11 +19,15 @@ const sampleElement= (array)=> {return array[Math.floor(Math.random()*array.leng
 const seedDB= async()=>{
     await Campground.deleteMany({}); //clearing the DB
     //adding seed data
-    for (let i=0; i<50; i++){
-        const p= Math.floor(Math.random()*30) +10;
+    for (let i=0; i<300; i++){
+        const p= Math.floor(Math.random()*20) +10;
         const random1000= Math.floor(Math.random()*1000); //cities is a list of 1000 cities, randomly selecting a city
         const camp= new Campground({
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            geometry: {
+                type: "Point",
+                coordinates: [cities[random1000].longitude, cities[random1000].latitude]
+            },
             author:'613d1402f2dfbcc4901e0912',
             title: `${sampleElement(descriptors)} ${sampleElement(places)}`,
             images: [
@@ -37,11 +41,7 @@ const seedDB= async()=>{
                 }
             ],
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore',
-            price: p,
-            geometry: {
-                type: "Point",
-                coordinates: [-74.5, 40]
-            }
+            price: p
             })
     await camp.save();
     }

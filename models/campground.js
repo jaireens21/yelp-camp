@@ -15,6 +15,11 @@ ImageSchema.virtual('cropped').get(function(){
 });  
 //a virtual to crop images to similar sizes using cloudinary to show on edit campgroud page
 
+
+const opts={ toJSON: {virtuals:true}};
+//to ensure virtual on campgroundSchema is included when using json.stringify. basically for mapbox cluster map.
+
+
 const campgroundSchema = new Schema({
     title: String,
     images: [ImageSchema],  //an array of objects, each with url & filenamme
@@ -42,7 +47,12 @@ const campgroundSchema = new Schema({
             ref: 'Review'
         }
     ]
-});
+}, opts);
+
+campgroundSchema.virtual('properties.popupText').get(function(){
+    return `<strong><a href="/campgrounds/${this._id}">${this.title}</a></strong><p>${this.location}</p>`;
+});  //a virtual to create a propoerties filed to match the data format that mapbox cluster expects
+
 
 //define a mongoose middleware to delete associated reviews when a campground is deleted
 campgroundSchema.post('findOneAndDelete', async function(doc){
