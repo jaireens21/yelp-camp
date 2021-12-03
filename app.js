@@ -33,11 +33,13 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public'))); //serving static pages from the public folder 
 
 const sessionConfig={
+    name:'bigbluesky',  //changing cookie name from connect.ssid
     secret: 'thisshouldbeabettersecret!', 
     resave:false, 
     saveUninitialized: true,
     cookie:{
         httpOnly: true,         // a safety provision
+        // secure: true,  //https only
         expires: Date.now() + (1000*60*60*24*7), //cookie will expire after a week (in milliseconds)
         maxAge: 1000*60*60*24*7
     }
