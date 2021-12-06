@@ -4,6 +4,12 @@
         <!-- to show cluster map -->
     </div>
 
+    <div>
+    <form class="d-flex form-inline" >
+        <input class="form-control mr-sm-2 search" type="text" placeholder="Search" aria-label="Search">
+        <a class="btn btn-outline-success my-2 my-sm-0 searchbutton" href="">Go</a>
+      </form>
+    </div>
 
     <h1>All Campgrounds</h1>
     <!-- <div>
@@ -39,6 +45,15 @@
    <script> 
         const mapToken= '<%-process.env.MAPBOX_TOKEN%>';
         const campgrounds= {features: <%-JSON.stringify(campgrounds)%>};
+        
+        let search=document.querySelector('.search');
+        let searchbutton=document.querySelector('.searchbutton');
+        searchbutton.addEventListener('click', function(){
+            searchbutton.setAttribute("href",`/campgrounds/${search.value}`);
+        });
+        
+        
+        
    </script> 
    <script src="/javascripts/clusterMap.js"></script>
 
