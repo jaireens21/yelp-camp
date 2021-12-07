@@ -9,8 +9,35 @@ const geocodingClient = mbxGeocoding({ accessToken: mapboxToken});
 const {cloudinary}= require("../cloudinary"); //to be able to delete images on cloudinary website
 
 module.exports.index= async(req,res)=>{
-    const campgrounds= await Campground.find({});
-    res.render('campgrounds/index.ejs', {campgrounds});
+let noMatch = null; let sstring="";
+if (req.query.search) {
+    sstring=req.query.search;
+    Campground.find({}, function(err, campgrounds) {
+      if (err) {
+        console.log(err);
+      } else {
+            let regex=new RegExp(req.query.search, 'gi');
+            let result = campgrounds.filter(place=> (place.title.match(regex)||place.location.match(regex)));
+            
+            if (result.length < 1) {
+            noMatch = req.query.search;
+            }
+            
+            res.render("campgrounds/index.ejs", {campgrounds: result, noMatch, sstring});
+        }
+    });
+} else {
+        Campground.find({}, function(err, campgrounds) {
+          if (err) {
+            console.log(err);
+          } else {
+              
+            res.render("campgrounds/index.ejs", {campgrounds,noMatch,sstring});
+          }
+        });
+    }
+    // const campgrounds= await Campground.find({});
+    // res.render('campgrounds/index.ejs', {campgrounds});
 }
 
 module.exports.renderNewForm= (req,res)=>{

@@ -39,6 +39,7 @@ const {isLoggedIn, isAuthor, validateCampground}=require('../middleware.js'); //
 //show list of all campgrounds
 router.get('/', catchAsync(campgrounds.index)); //using controllers
 
+
 //serve a form to add a new campground
 router.get('/new', isLoggedIn, campgrounds.renderNewForm);
 //isLoggedIn middleware will check if user is logged in before giving access to this route
