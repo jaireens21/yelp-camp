@@ -8,7 +8,7 @@
         <!-- searching a campground -->
         <form class="input-group w-75 mx-auto mt-5 mb-5" method="GET" action="/campgrounds" >
             <input class="search form-control" type="search" placeholder="Search" aria-label="Search" name="search">
-            <button class="btn btn-danger" type="button">Go</button> 
+            <button class="btn btn-danger" type="submit">Go</button> 
         </form>
     </div>
 
@@ -17,8 +17,8 @@
     <%}%>
 
     <!-- if we found no match for the search string -->
-    <%if(noMatch!==null){%>
-        <h1 class="mb-5">No matches found for <%=noMatch%>!</h1>
+    <%if(noMatch){%>
+        <h1 class="mb-5">No matches found!</h1>
     <% }%>
 
     <% if(!sstring){%>

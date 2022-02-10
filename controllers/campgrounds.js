@@ -9,9 +9,9 @@ const geocodingClient = mbxGeocoding({ accessToken: mapboxToken});
 const {cloudinary}= require("../cloudinary"); 
 
 module.exports.index= async(req,res)=>{
-let noMatch = null; let sstring="";
+let noMatch = false; let sstring="";
 if (req.query.search) {
-    sstring=req.query.search;
+    sstring=req.query.search.replace(/[^a-zA-Z0-9 ]/g, "");
     Campground.find({}, function(err, campgrounds) {
       if (err) {
         console.log(err);
@@ -20,7 +20,7 @@ if (req.query.search) {
             let result = campgrounds.filter(place=> (place.title.match(regex)||place.location.match(regex)));
             
             if (result.length < 1) {
-            noMatch = req.query.search;
+            noMatch = true;
             }
             
             res.render("campgrounds/index.ejs", {campgrounds: result, noMatch, sstring});
