@@ -59,7 +59,7 @@
                 <%for (let img of campground.images) {%>
                     <div class="col">
                         <div class="card">
-                            <img src="<%=img.cropped%>" alt="" class="img-thumbnail">
+                            <img src="<%=img.cropped%>" alt="" class="img-thumbnail" crossorigin>
                             <!--cropped is using virtual on models/campgrounds to give a 4:3 image-->
                             <div class="card-img-overlay text-end pt-1 pe-2">
                                 <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%=img.filename%>" >    

@@ -6,7 +6,7 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding'); //for get
 const mapboxToken= process.env.MAPBOX_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapboxToken});
 
-const {cloudinary}= require("../cloudinary"); //to be able to delete images on cloudinary website
+const {cloudinary}= require("../cloudinary"); 
 
 module.exports.index= async(req,res)=>{
 let noMatch = null; let sstring="";
@@ -50,7 +50,7 @@ module.exports.createCampground= async (req,res,next)=>{
         query: req.body.campground.location,
         limit:1 //no. of results
     }).send()
-    //res.send(geodata.body.features[0].geometry); //gives a geoJSON
+    //res.send(geodata.body.features[0].geometry); gives a geoJSON
     
     const campground= new Campground(req.body.campground);
     campground.geometry= geodata.body.features[0].geometry; //saving location coordinates to campground

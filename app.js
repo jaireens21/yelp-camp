@@ -10,6 +10,9 @@ const ejsMate= require('ejs-mate');
 const methodOverride= require('method-override');
 const session=require('express-session');
 const flash=require('connect-flash');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+
 
 const passport=require('passport');
 const LocalStrategy= require('passport-local');
@@ -31,6 +34,56 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public'))); //serving static pages from the public folder 
+app.use(mongoSanitize());//prevent mongo injection
+
+app.use(helmet());
+
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net/",
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css",
+    
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://*.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            childSrc: ['blob:'],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dvhs0ay92/image/upload/", 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+
 
 const sessionConfig={
     name:'bigbluesky',  //changing cookie name from connect.ssid
@@ -115,6 +168,6 @@ app.all('*', (req,res,next)=>{
 
 
 
-app.listen(3000, ()=>{
-    console.log('LISTENING ON PORT 3000');
+app.listen(3010, ()=>{
+    console.log('LISTENING ON PORT 3010');
 })
