@@ -12,20 +12,35 @@ const session=require('express-session');
 const flash=require('connect-flash');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-
+const MongoDBStore=require('connect-mongo'); //using MongoDB session store
 
 const passport=require('passport');
 const LocalStrategy= require('passport-local');
 const User=require('./models/user'); //require the model with passport-local-mongoose plugged in
-
 const ExpressError=require('./utils/ExpressError.js');
-
 const campgroundRoutes=require('./routes/campgrounds'); //requiring the /campgrounds routes 
 const reviewRoutes=require('./routes/reviews'); //requiring the reviews routes
 const userRoutes=require('./routes/users');  //requiring the user login/register routes
 const multer = require('multer');
-
 const app= express();
+
+// const dbUrl=process.env.DB_URL;
+const dbUrl= 'mongodb://localhost:27017/yelp-camp'
+
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+})
+.then(()=>{
+    console.log('Database connected');  
+})
+.catch( (err)=>{
+    console.log("connection error:");
+    console.log(err);
+})
+
+
+
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -34,6 +49,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public'))); //serving static pages from the public folder 
+
+const sessionConfig={
+    store:MongoDBStore.create({ //using mongoDB for session store
+        mongoUrl:dbUrl, 
+        touchAfter: 24*60*60, //Lazy session update , time in seconds
+        
+    }),         
+    name:'bigbluesky',  //changing cookie name from connect.ssid
+    secret: 'thisshouldbeabettersecret!', 
+    resave:false, //don't save session if unmodified
+    saveUninitialized: true,
+    cookie:{
+        httpOnly: true,         // a safety provision
+        // secure: true,  //https only
+        expires: Date.now() + (1000*60*60*24*7), //cookie will expire after a week (in milliseconds)
+        maxAge: 1000*60*60*24*7
+    }
+}
+app.use(session(sessionConfig));
+app.use(flash());
 app.use(mongoSanitize());//prevent mongo injection
 
 app.use(helmet());
@@ -85,20 +120,6 @@ app.use(
 );
 
 
-const sessionConfig={
-    name:'bigbluesky',  //changing cookie name from connect.ssid
-    secret: 'thisshouldbeabettersecret!', 
-    resave:false, 
-    saveUninitialized: true,
-    cookie:{
-        httpOnly: true,         // a safety provision
-        // secure: true,  //https only
-        expires: Date.now() + (1000*60*60*24*7), //cookie will expire after a week (in milliseconds)
-        maxAge: 1000*60*60*24*7
-    }
-}
-app.use(session(sessionConfig));
-app.use(flash());
 
 app.use(passport.initialize());  // to initialise passport
 app.use(passport.session()); //to have persistent login sessions; must be after app.use(session)
@@ -127,21 +148,6 @@ app.use((req,res,next)=>{
 app.use('/campgrounds', campgroundRoutes); //using the /campgrounds routes
 app.use('/campgrounds/:id/reviews', reviewRoutes); //using the reviews routes
 app.use('/', userRoutes); //using the user routes
-
-
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-})
-.then(()=>{
-    console.log('Database connected');  
-})
-.catch( (err)=>{
-    console.log("connection error:");
-    console.log(err);
-})
-
-
 
 app.get('/', (req,res)=>{
    res.render('home.ejs');
