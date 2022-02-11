@@ -25,7 +25,7 @@ const multer = require('multer');
 const app= express();
 
 // const dbUrl=process.env.DB_URL; //for using mongoDB cloud
-const dbUrl= 'mongodb://localhost:27017/yelp-camp'
+const dbUrl= process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 mongoose.connect(dbUrl, {
     useNewUrlParser: true, 
@@ -50,6 +50,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public'))); //serving static pages from the public folder 
 
+const secret= process.env.SECRET || 'thisshouldbeabettersecret!';
+
 const sessionConfig={
     store:MongoDBStore.create({ //using mongoDB for session store
         mongoUrl:dbUrl, 
@@ -59,7 +61,7 @@ const sessionConfig={
         // }
     }),         
     name:'bigbluesky',  //changing cookie name from connect.ssid
-    secret: 'thisshouldbeabettersecret!', 
+    secret, 
     resave:false, //don't save session if unmodified
     saveUninitialized: true,
     cookie:{
