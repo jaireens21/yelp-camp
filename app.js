@@ -177,7 +177,7 @@ app.all('*', (req,res,next)=>{
 
 
 
-
-app.listen(3010, ()=>{
-    console.log('LISTENING ON PORT 3010');
+const port= process.env.PORT || 3010;
+app.listen(port, ()=>{
+    console.log(`LISTENING ON PORT ${port}`);
 })
