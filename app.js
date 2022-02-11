@@ -24,7 +24,7 @@ const userRoutes=require('./routes/users');  //requiring the user login/register
 const multer = require('multer');
 const app= express();
 
-// const dbUrl=process.env.DB_URL;
+// const dbUrl=process.env.DB_URL; //for using mongoDB cloud
 const dbUrl= 'mongodb://localhost:27017/yelp-camp'
 
 mongoose.connect(dbUrl, {
@@ -54,7 +54,9 @@ const sessionConfig={
     store:MongoDBStore.create({ //using mongoDB for session store
         mongoUrl:dbUrl, 
         touchAfter: 24*60*60, //Lazy session update , time in seconds
-        
+        // crypto:{     //causing fatal errors
+        //     secret:'squirrel'
+        // }
     }),         
     name:'bigbluesky',  //changing cookie name from connect.ssid
     secret: 'thisshouldbeabettersecret!', 
@@ -102,7 +104,7 @@ app.use(
         directives: {
             defaultSrc: [],
             connectSrc: ["'self'", ...connectSrcUrls],
-            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            scriptSrc: ["'self'", "'unsafe-inline'", ...scriptSrcUrls],
             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
             workerSrc: ["'self'", "blob:"],
             childSrc: ['blob:'],
@@ -161,7 +163,7 @@ app.use((err, req, res, next)=>{
         err.message='Oh No, something went wrong';
     if (err.code === 'LIMIT_FILE_SIZE')  //instanceof multer.MulterError
         {err.message = 'File Size is too large. Allowed file size is 2MB';}
-    res.status(statusCode).render('error.ejs', {err});
+    res.status(statusCode).render('error', {err});
 })
 
 
