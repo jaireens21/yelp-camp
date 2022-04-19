@@ -1,2 +1,2 @@
 # yelp-camp
-web development course project
+project for web developer course taught by Colt Steele
